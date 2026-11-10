@@ -1,0 +1,52 @@
+name: "Perch at a Glance"
+description: "The Perch household dashboard — Today at a Glance, Who's Where, Boys' Day, tasks, shopping, and the Lookout. Fed by Skipper + Amanda."
+version: "0.1.0"
+slug: "perch_at_a_glance"
+init: false
+arch:
+  - amd64
+  - aarch64
+startup: application
+panel_icon: "mdi:home-variant"
+# Ingress: the board inside the Home Assistant UI (sidebar entry), authenticated by HA.
+ingress: true
+ingress_port: 8099
+ingress_stream: true
+# webui: the "Open Web UI" button. The same port is exposed below so the
+# Cloudflared add-on can reach the board for external (tunnel) access.
+webui: "http://[HOST]:[PORT:8099]/"
+ports:
+  "8099/tcp": 8099
+ports_description:
+  "8099/tcp": "Perch web UI + API (also the Cloudflared add-on target)"
+# Phase 2 (Smart Home panel, read-only HA states) uses the Supervisor-proxied
+# Home Assistant API. Unused in Phase 1 (feed-only).
+homeassistant_api: true
+options:
+  port: 8099
+  timezone: "America/St_Johns"
+  # Default viewer on first load (per tablet, the viewer toggle overrides and
+  # is remembered on that tablet). Theme follows the viewer, and the theme is
+  # configurable per viewer — it is NOT hard-coded.
+  #   Trevor -> dark. Leading option: northdatum-dark (Northdatum branding,
+  #   centred-dot mark); pine is one candidate among others. His exact dark
+  #   theme is still open — the precise Northdatum palette lives in the locked
+  #   v1.0 identity and gets pulled in at Phase 1 theming.
+  #   Leslie -> blush (light). Blush is hers only; she likes light themes.
+  default_viewer: "trevor"
+  theme_trevor: "northdatum-dark"
+  theme_leslie: "blush"
+  ha_token: ""
+  feed_token_skipper: ""
+  feed_token_amanda: ""
+  open_meteo_enabled: true
+schema:
+  port: "port"
+  timezone: "str"
+  default_viewer: "list(trevor,leslie)"
+  theme_trevor: "list(northdatum-dark,pine,dusk,midnight)"
+  theme_leslie: "list(blush,daylight)"
+  ha_token: "password"
+  feed_token_skipper: "password"
+  feed_token_amanda: "password"
+  open_meteo_enabled: "bool"

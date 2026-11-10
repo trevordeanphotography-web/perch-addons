@@ -1,0 +1,7 @@
+# Custom add-on repository manifest.
+# Install path (Trevor, in Home Assistant): Settings → Add-ons → Add-on Store →
+# ⋮ → Repositories → add the URL below → install "Perch at a Glance".
+# NOTE: the repository URL is a placeholder until the repo is created.
+name: Perch Add-ons
+url: https://github.com/trevordeanphotography-web/perch-addons
+maintainer: Trevor D. Rideout

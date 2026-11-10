@@ -1,0 +1,1 @@
+{"dependencies":{"better-sqlite3":"^13.0.3"},"description":"The Perch at a Glance household dashboard server (Home Assistant add-on). Phase 1: feed-only.","engines":{"node":">=20"},"main":"server.js","name":"perch-at-a-glance","private":true,"scripts":{"start":"node server.js"},"version":"0.1.0"}

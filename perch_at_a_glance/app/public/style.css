@@ -1,0 +1,146 @@
+/* The Perch at a Glance — styles.
+ * Palettes blush / daylight / dusk / midnight are lifted verbatim from the
+ * Family Command Centre demo v0.3 (~/workspace/household-sync/
+ * family-command-centre-demo-v03.html). northdatum-dark and pine are new:
+ * northdatum-dark is direction A ("Field Instrument, Dark") from
+ * ~/workspace/perch-app/NORTHDATUM-DARK-THEME.md — built from locked
+ * Northdatum tokens (ND-BRAND-001 v1.4 / ND-VIS-004 v1.3), applied
+ * 2026-11-10 at Trevor's choice; pine is a light-green candidate for
+ * Trevor's view. Theme mapping is configurable per viewer on the server —
+ * never hard-coded: Trevor -> dark (northdatum-dark), Leslie -> blush
+ * (light). */
+
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,var(--bg1),var(--bg2) 50%,var(--bg3));background-attachment:fixed;min-height:100vh;
+  padding-bottom:84px}
+body[data-theme="dusk"]{--bg1:#1e1b4b;--bg2:#581c87;--bg3:#831843;--card:rgba(255,255,255,.08);--card-border:rgba(255,255,255,.16);--cell:rgba(255,255,255,.05);--ink:#fafaff;--muted:#d8ccf5;--accent:#c4b5fd;--warn:#fbbf24;--bad:#f87171;--good:#4ade80}
+body[data-theme="midnight"]{--bg1:#020617;--bg2:#1e3a8a;--bg3:#0f172a;--card:rgba(255,255,255,.07);--card-border:rgba(255,255,255,.14);--cell:rgba(255,255,255,.05);--ink:#f1f5f9;--muted:#aebfd8;--accent:#93c5fd;--warn:#fbbf24;--bad:#f87171;--good:#4ade80}
+body[data-theme="daylight"]{--bg1:#f4f1ea;--bg2:#e8e2d5;--bg3:#dcd4c2;--card:#ffffff;--card-border:#e2e8f0;--cell:#f8fafc;--ink:#1e293b;--muted:#64748b;--accent:#0f766e;--warn:#b45309;--bad:#b91c1c;--good:#15803d}
+body[data-theme="blush"]{--bg1:#fff1f2;--bg2:#fce7f3;--bg3:#fbcfe8;--card:rgba(255,255,255,.75);--card-border:rgba(244,114,182,.35);--cell:rgba(255,255,255,.6);--ink:#3f2a33;--muted:#9d7a88;--accent:#ec4899;--warn:#b45309;--bad:#be123c;--good:#15803d}
+body[data-theme="northdatum-dark"]{--bg1:#111a29;--bg2:#1c293a;--bg3:#203f3c;--card:#1c293a;--card-border:rgba(165,184,175,.28);--cell:rgba(244,240,232,.05);--ink:#f4f0e8;--muted:#a5b8af;--accent:#d89a2c;--warn:#e8b456;--bad:#e07a5f;--good:#7fb3a4;--on-accent:#111a29}
+body[data-theme="pine"]{--bg1:#f0fdf4;--bg2:#dcfce7;--bg3:#bbf7d0;--card:rgba(255,255,255,.8);--card-border:rgba(22,101,52,.3);--cell:rgba(255,255,255,.6);--ink:#14532d;--muted:#4d7c5f;--accent:#15803d;--warn:#b45309;--bad:#be123c;--good:#15803d}
+
+/* Panels: one full screen active at a time. */
+.panel{display:block}
+#panel-perch[hidden],#panel-home[hidden]{display:none}
+
+header{display:flex;justify-content:space-between;align-items:flex-start;padding:22px 22px 4px;gap:12px;flex-wrap:wrap}
+.title{font-size:clamp(28px,5vw,40px);font-weight:700;line-height:1.1}
+/* Northdatum reverse datum mark (locked ND-VIS-004 v1.3 asset, inlined in
+ * index.html). Shown only on the northdatum-dark theme; minimum 28px. */
+.brand-mark{display:none;vertical-align:-6px;margin-right:6px}
+.brand-mark svg{display:block;width:32px;height:32px;min-width:28px;min-height:28px}
+body[data-theme="northdatum-dark"] .brand-mark{display:inline-block}
+/* Direction A typography (brand spec §3): Inter-led stack on Trevor's view
+ * only; monospace dateline (timestamps per §12). Other themes untouched. */
+body[data-theme="northdatum-dark"]{font-family:Inter,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body[data-theme="northdatum-dark"] .dateline{font-family:ui-monospace,"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace}
+/* Direction A hero band: deep teal --bg3, the spec's named role for bg3. */
+body[data-theme="northdatum-dark"] .hero{background:var(--bg3)}
+.dateline{color:var(--muted);font-size:15px;margin-top:6px}
+/* Leslie's "Barbie Dream House" subtitle — Leslie's view only, both panels.
+   Accent colour so it reads pink on blush, amber on dark themes. */
+.viewer-sub{color:var(--accent);font-size:15px;font-style:italic;font-weight:600;margin-top:4px}
+.head-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.head-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.head-controls label{color:var(--muted);font-size:13px}
+.head-controls select{border:1px solid var(--card-border);background:var(--card);color:var(--ink);border-radius:12px;padding:10px;font-size:15px;min-height:44px}
+.pill{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--muted);border:1px solid var(--card-border);border-radius:999px;padding:5px 11px;background:var(--card)}
+
+/* Viewer toggle — first-class, in the header chrome. */
+.viewer-toggle{display:flex;border:1px solid var(--card-border);border-radius:999px;overflow:hidden;background:var(--card)}
+.viewer-toggle button{border:0;background:transparent;color:var(--muted);font-size:17px;font-weight:700;padding:12px 22px;min-height:52px;min-width:110px;cursor:pointer}
+.viewer-toggle button.active{background:var(--accent);color:var(--on-accent,#fff)}
+.density-toggle{display:flex;border:1px solid var(--card-border);border-radius:12px;overflow:hidden;background:var(--card)}
+.density-toggle button{border:0;background:transparent;color:var(--muted);font-size:14px;font-weight:700;padding:10px 14px;min-height:44px;cursor:pointer}
+.density-toggle button.active{background:var(--accent);color:var(--on-accent,#fff)}
+
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:22px;padding:20px;backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card h2{margin:0 0 12px;font-size:19px}
+.card h3{margin:16px 0 6px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.hero{margin:14px 22px 16px;border-left:5px solid var(--accent)}
+.grid{display:grid;gap:16px;padding:0 22px 22px;grid-template-columns:1fr}
+@media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
+@media (min-width:1200px){.grid{grid-template-columns:repeat(3,1fr)} .span-2{grid-column:span 2}}
+.muted-note{color:var(--muted);font-size:13px;line-height:1.5}
+
+.weather-grid{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
+@media (min-width:700px){.weather-grid{grid-template-columns:repeat(4,1fr)}}
+.wx{background:var(--cell);border:1px solid var(--card-border);border-radius:14px;padding:12px}
+.wx b{display:block;font-size:14px}
+.wx .temp{font-size:28px;font-weight:200}
+.wx small{display:block;color:var(--muted)}
+
+.weeknav{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.weeknav button{border:1px solid var(--card-border);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:15px;min-height:44px;flex:1;text-align:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day{border:1px solid var(--card-border);border-radius:14px;padding:8px;min-height:110px;background:var(--cell)}
+.day.today{outline:2px solid var(--accent)}
+.day b{display:block;margin-bottom:6px}
+.ev{display:block;width:100%;text-align:left;border:0;border-left:5px solid #888;background:transparent;color:var(--ink);padding:6px;margin:0 0 6px;border-radius:4px;cursor:pointer;font-size:14px}
+.ev small{display:block;color:var(--muted)}
+@media (max-width:699px){.cal-grid{display:block} .day{min-height:0;margin-bottom:8px}}
+
+.chip{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700;border:1px solid var(--card-border)}
+.chip.confirmed{color:var(--good)} .chip.tentative{color:var(--warn)} .chip.provisional{color:var(--bad)}
+.chip.high{color:var(--bad)} .chip.medium{color:var(--warn)} .chip.low{color:var(--good)}
+
+.row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--card-border);min-height:44px}
+.row:last-child{border-bottom:0}
+.row input{width:22px;height:22px;margin-top:2px;accent-color:var(--accent)}
+.row .t{flex:1} .row .t small{display:block;color:var(--muted)}
+.row.done .t{opacity:.6;text-decoration:line-through}
+
+.lunch-head{font-size:28px;font-weight:700;margin-bottom:4px}
+.lunch-sub{color:var(--muted);margin-bottom:12px}
+.boys-grid{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:700px){.boys-grid{grid-template-columns:1fr 1fr}}
+.boy{background:var(--cell);border:1px solid var(--card-border);border-radius:14px;padding:12px}
+.boy b{display:block;font-size:16px;margin-bottom:6px}
+.boy ul{margin:6px 0 0;padding-left:18px}
+.pack-flag{margin-top:12px;border:1px solid var(--card-border);border-left:5px solid var(--warn);border-radius:14px;padding:12px;background:var(--cell)}
+
+.flag{border:1px solid var(--card-border);border-left:5px solid var(--warn);border-radius:14px;padding:12px;margin-bottom:10px;background:var(--cell)}
+.flag.high{border-left-color:var(--bad)} .flag.low{border-left-color:var(--good)}
+.flag p{margin:6px 0} .flag small{color:var(--muted)}
+
+.quickadd{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.quickadd input{flex:1;min-width:160px;border:1px solid var(--card-border);background:var(--cell);color:var(--ink);border-radius:12px;padding:12px;font-size:16px;min-height:48px;box-sizing:border-box}
+.quickadd select{border:1px solid var(--card-border);background:var(--card);color:var(--ink);border-radius:12px;padding:12px;font-size:16px;min-height:48px}
+.qa-btn{border:1px solid var(--card-border);background:var(--card);color:var(--ink);border-radius:12px;padding:12px 20px;font-size:16px;cursor:pointer;min-height:48px;font-weight:700}
+
+.forecast-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.fc{background:var(--cell);border:1px solid var(--card-border);border-radius:12px;padding:8px 10px;text-align:center;min-width:64px}
+.fc b{display:block;font-size:13px}
+.fc small{color:var(--muted)}
+
+/* Prominent panel switcher — fixed bottom bar, wall-tablet sized. */
+#panelSwitcher{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;gap:10px;
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb,var(--bg2) 88%,transparent);backdrop-filter:blur(16px);
+  border-top:1px solid var(--card-border)}
+#panelSwitcher button{flex:1;border:2px solid var(--card-border);background:var(--card);color:var(--ink);
+  border-radius:16px;padding:14px 10px;font-size:19px;font-weight:700;min-height:60px;cursor:pointer}
+#panelSwitcher button.active{background:var(--accent);border-color:var(--accent);color:var(--on-accent,#fff)}
+
+footer{padding:0 22px 26px;color:var(--muted);font-size:13px;line-height:1.5}
+
+/* Phase 2 stub: dark treatment echoing the reference dashboards. */
+.sh-dark .card{background:rgba(255,255,255,.06);border-color:rgba(148,163,184,.22);color:#e8eef7}
+.sh-dark .card h2{color:#e8eef7}
+.sh-dark .card p{color:#93a4bd}
+/* Light themes: the dark card treatment vanishes on a light background
+   (near-white headers on near-white cards). Fall back to light cards. */
+body[data-theme="blush"] .sh-dark .card,
+body[data-theme="daylight"] .sh-dark .card{background:var(--card);border-color:var(--card-border);color:var(--ink)}
+body[data-theme="blush"] .sh-dark .card p,
+body[data-theme="daylight"] .sh-dark .card p{color:var(--muted)}
+/* Leslie's tile headers: darker plum-purple from the blush palette
+   (deep plum #6d2a54, ~9.5:1 on white) — applies to both panels. */
+body[data-theme="blush"] .card h2{color:#6d2a54}
+
+/* Density: Large = bigger text for wall tablets. */
+body.text-large{zoom:1.15}
+body.density-compact .card{padding:12px 14px}
+body.density-compact .day{min-height:70px}
+body.density-compact .row{padding:6px 0}

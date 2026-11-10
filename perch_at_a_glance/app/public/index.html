@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Perch at a Glance</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="northdatum-dark" data-panel="perch">
+<!-- ======================= PERCH PANEL (Phase 1: feed-only) ======================= -->
+<div id="panel-perch" class="panel">
+  <header>
+    <div>
+      <div class="title"><span class="brand-mark" id="brandDot" title="Northdatum"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="32" height="32" role="img" aria-label="Northdatum reverse datum mark"><title>Northdatum reverse datum mark</title><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"><circle cx="110" cy="110" r="72" stroke-width="11.5"/><path d="M110 9V32 M110 188V211 M9 110H32 M188 110H211" stroke-width="12"/><circle cx="110" cy="110" r="18" fill="#D89A2C" stroke="none"/></g></svg></span> The Perch at a Glance</div>
+      <div class="viewer-sub" id="viewerSub" hidden></div>
+      <div class="dateline"><span id="clockLine">--:--</span> &middot; <span id="dateLine"></span></div>
+    </div>
+    <div class="head-right">
+      <!-- First-class viewer toggle: Trevor (dark) / Leslie (blush, light).
+           Theme follows the viewer; it is configurable per viewer on the server. -->
+      <div class="viewer-toggle" role="group" aria-label="Viewing as">
+        <button type="button" id="viewerTrevor" data-viewer="trevor">Trevor</button>
+        <button type="button" id="viewerLeslie" data-viewer="leslie">Leslie</button>
+      </div>
+      <div class="head-controls">
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect" aria-label="Theme for this viewer"></select>
+        <div class="density-toggle" role="group" aria-label="Density">
+          <button type="button" id="densityNormal">Normal</button>
+          <button type="button" id="densityLarge">Large</button>
+        </div>
+      </div>
+      <span class="pill" id="modePill">Weekday</span>
+    </div>
+  </header>
+
+  <section class="card hero" aria-label="Today at a Glance">
+    <h2>Today at a Glance</h2>
+    <div class="weather-grid" id="weatherGrid"></div>
+    <p class="muted-note" id="weatherNote"></p>
+  </section>
+
+  <main class="grid">
+    <section class="card" id="secWhosWhere" aria-label="Who's Where">
+      <h2>Who&rsquo;s Where</h2>
+      <div id="whosWhere"></div>
+    </section>
+
+    <section class="card span-2" id="secSchedule" aria-label="Household Schedule">
+      <h2>Household Schedule</h2>
+      <div class="weeknav">
+        <button type="button" id="prevWeek" aria-label="Previous week">&larr; Prev</button>
+        <button type="button" id="todayBtn">Today</button>
+        <button type="button" id="nextWeek" aria-label="Next week">Next &rarr;</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <p class="muted-note">Fed calendar items show as <span class="chip provisional">Provisional</span> until the polled layer confirms them. Private appointments show as &ldquo;Busy&rdquo; only.</p>
+    </section>
+
+    <section class="card span-2" id="secBoysDay" aria-label="The Boys' Day">
+      <h2>The Boys&rsquo; Day</h2>
+      <div class="lunch-head" id="lunchHead">Pack Lunch</div>
+      <div class="lunch-sub" id="lunchSub"></div>
+      <div class="boys-grid" id="boysGrid"></div>
+      <div class="pack-flag" id="packFlag"></div>
+    </section>
+
+    <section class="card" id="secTasks" aria-label="Tasks and Checklists">
+      <h2>Tasks &amp; Checklists</h2>
+      <div id="taskList"></div>
+      <div class="quickadd">
+        <input type="text" id="quickTaskTitle" placeholder="Add a task&hellip;" aria-label="Add a task">
+        <select id="quickTaskList" aria-label="Task list">
+          <option value="home">Home</option>
+          <option value="work">Work</option>
+        </select>
+        <button type="button" class="qa-btn" id="quickTaskBtn">Add</button>
+      </div>
+      <p class="muted-note">&ldquo;Reported done&rdquo; (checkbox) is not &ldquo;verified done&rdquo; — only a fed update from an assistant verifies a task.</p>
+    </section>
+
+    <section class="card" id="secShop" aria-label="Shopping">
+      <h2>Shopping</h2>
+      <div id="shopList"></div>
+      <div class="quickadd">
+        <input type="text" id="quickShopLabel" placeholder="Add a grocery item&hellip;" aria-label="Add a grocery item">
+        <select id="quickShopGroup" aria-label="Shopping group">
+          <option value="Produce">Produce</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Household">Household</option>
+          <option value="Quick adds" selected>Quick adds</option>
+        </select>
+        <button type="button" class="qa-btn" id="quickShopBtn">Add</button>
+      </div>
+    </section>
+
+    <section class="card" id="secLookout" aria-label="The Lookout">
+      <h2>The Lookout</h2>
+      <div id="lookoutBody"></div>
+      <div class="forecast-strip" id="lookoutForecast"></div>
+    </section>
+
+    <section class="card" id="secFlags" aria-label="Noticed">
+      <h2>Noticed</h2>
+      <div id="flagList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="lastUpdated">Last updated: &mdash;</span><br>
+    <span id="feedFreshness"></span><br>
+    <span>Perch at a Glance v0.1.0 &middot; Phase 1 feed-only (Skipper + Amanda) &middot; Weather: Open-Meteo</span>
+  </footer>
+</div>
+
+<!-- ======================= SMART HOME PANEL (Phase 2 stub) ======================= -->
+<div id="panel-home" class="panel" hidden>
+  <header>
+    <div>
+      <div class="title">Smart Home</div>
+      <div class="viewer-sub" id="viewerSubHome" hidden></div>
+      <div class="dateline">Phase 2 &middot; read-only Home Assistant states &middot; one-touch actions are Phase 3</div>
+    </div>
+    <div class="head-right">
+      <span class="pill">COMING IN PHASE 2</span>
+    </div>
+  </header>
+  <main class="grid sh-dark">
+    <section class="card"><h2>Rooms</h2><p>Room grid with per-room device states. <span class="chip provisional">Planned</span></p></section>
+    <section class="card"><h2>Devices &amp; Accessories</h2><p>Device cards with on/off + state (lights, plugs, TV, speakers). <span class="chip provisional">Planned</span></p></section>
+    <section class="card"><h2>Network</h2><p>Router stats: download / upload / latency. <span class="chip provisional">Planned</span></p></section>
+    <section class="card"><h2>LED Brightness</h2><p>Brightness dial + effects. <span class="chip provisional">Planned</span></p></section>
+    <section class="card"><h2>Music</h2><p>Now playing + playback controls. <span class="chip provisional">Planned</span></p></section>
+    <section class="card"><h2>Climate</h2><p>Temperature dial, swing mode, wind level. <span class="chip provisional">Planned</span></p></section>
+    <section class="card"><h2>Electricity</h2><p>Consumption chart. <span class="chip provisional">Planned</span></p></section>
+    <section class="card"><h2>Voice Assistant</h2><p>Voice command status. <span class="chip provisional">Planned</span></p></section>
+    <section class="card span-2"><h2>3D Floor Plan</h2><p>Floor plan with per-room temperatures and states. <span class="chip provisional">Planned</span></p></section>
+  </main>
+  <footer>
+    <span>Visual reference: docs/phase2-reference/ (rooms/accessories dashboards + 3D floor plan).</span>
+  </footer>
+</div>
+
+<!-- ======================= PROMINENT PANEL SWITCHER ======================= -->
+<!-- Always visible, wall-tablet sized. Tap or swipe left/right to switch. -->
+<nav id="panelSwitcher" aria-label="Switch panel">
+  <button type="button" id="switchPerch" data-panel="perch">Perch at a Glance</button>
+  <button type="button" id="switchHome" data-panel="home">Smart Home</button>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
