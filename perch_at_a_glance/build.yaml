@@ -1,0 +1,11 @@
+# Base images for the Supervisor build.
+# BUILD_FROM in the Dockerfile is filled from here per architecture — without
+# this file the Supervisor passes an empty BUILD_FROM and the build fails:
+# "failed to build: failed to solve: base name (${BUILD_FROM}) should not
+# be blank" (hit on the first install attempt, 2026-11-10).
+# Pinned to the hassio-addons base (s6-overlay + bashio, which run.sh needs
+# via its `#!/usr/bin/with-contenv bashio` shebang), version 21.0.11 — the
+# same base the Tailscale add-on uses (checked live, Nov 2026).
+build_from:
+  aarch64: ghcr.io/hassio-addons/base/aarch64:21.0.11
+  amd64: ghcr.io/hassio-addons/base/amd64:21.0.11

@@ -1,6 +1,6 @@
 name: "Perch at a Glance"
 description: "The Perch household dashboard — Today at a Glance, Who's Where, Boys' Day, tasks, shopping, and the Lookout. Fed by Skipper + Amanda."
-version: "0.1.0"
+version: "0.1.1"
 slug: "perch_at_a_glance"
 init: false
 arch:

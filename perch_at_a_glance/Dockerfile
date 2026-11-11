@@ -1,6 +1,8 @@
 # Perch at a Glance — Home Assistant add-on image.
-# Built by the Supervisor; BUILD_FROM is supplied per architecture.
-ARG BUILD_FROM
+# Built by the Supervisor; BUILD_FROM is supplied per architecture from
+# build.yaml. The default below (amd64) only matters for local `docker build`
+# runs without --build-arg; the Supervisor always overrides it per arch.
+ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:21.0.11
 FROM ${BUILD_FROM}
 
 # Node.js + npm from Alpine, plus a compiler toolchain for the better-sqlite3
