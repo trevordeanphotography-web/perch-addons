@@ -482,7 +482,7 @@ function serveStatic(req, res, pathname) {
   fs.readFile(file, function (err, data) {
     if (err) { sendJson(res, 404, { error: "not found" }); return; }
     var ext = path.extname(file);
-    var type = { ".html": "text/html", ".js": "application/javascript", ".css": "text/css", ".png": "image/png" }[ext] || "application/octet-stream";
+    var type = { ".html": "text/html", ".js": "application/javascript", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg" }[ext] || "application/octet-stream";
     res.writeHead(200, { "Content-Type": type + "; charset=utf-8", "Content-Length": data.length });
     res.end(data);
   });
@@ -555,7 +555,7 @@ function handler(req, res) {
   var parsed = new URL(req.url, "http://localhost");
   var pathname = parsed.pathname || "/";
   if (req.method === "GET" && pathname === "/api/state") { sendJson(res, 200, buildState()); return; }
-  if (req.method === "GET" && pathname === "/health") { sendJson(res, 200, { ok: true, version: "0.1.3", phase: 1 }); return; }
+  if (req.method === "GET" && pathname === "/health") { sendJson(res, 200, { ok: true, version: "0.1.4", phase: 1 }); return; }
   if (req.method === "POST" && pathname === "/api/feed") {
     if (!FEED_TOKENS.skipper && !FEED_TOKENS.amanda) {
       sendJson(res, 503, { error: "feed not configured: no assistant tokens set" }); return;

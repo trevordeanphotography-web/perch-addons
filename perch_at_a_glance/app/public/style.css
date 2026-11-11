@@ -144,3 +144,230 @@ body.text-large{zoom:1.15}
 body.density-compact .card{padding:12px 14px}
 body.density-compact .day{min-height:70px}
 body.density-compact .row{padding:6px 0}
+
+/* ============================================================
+   DESIGN v2 (0.1.4) — ported from the 2026-11-11 design mockups.
+   Trevor\u2019s principles: clean, modern, liquid overlays, simple touch nav.
+   v1 layer: liquid-glass cards, thin tracked type, room rail + photo
+   hero + glass devices (Smart Home panel). v2 layer: washed-out
+   photo backgrounds, more breathing room, collapsed-first cards,
+   top nav + drawer nav (trigger = tapping "The Perch").
+   Photos are Trevor\u2019s own, in photos/ (family.jpg, interior.jpg,
+   exterior.jpg) — referenced by relative URL, never embedded.
+   Glass falls back to solid colours where backdrop-filter is
+   unsupported (iPad Air 2 / iOS 15, Fire HD 10 Silk).
+   ============================================================ */
+/* ============================================================
+   DESIGN 2026-11-11 — liquid-glass restyle (mockup only).
+   Trevor's principles: clean, modern, liquid overlays, simple touch nav.
+   Homio is a reference for structure/type only — nothing copied from it.
+
+   Glass = translucent panels + backdrop blur over backgrounds, with a
+   solid-colour fallback for browsers without backdrop-filter
+   (iPad Air 2 / iOS 15 Safari, Fire HD 10 Silk).
+   ============================================================ */
+
+/* --- Glass tokens, per theme (all six candidates, so the theme picker
+   never lands on an unstyled theme) --- */
+body[data-theme="northdatum-dark"]{--glass:rgba(28,41,58,.55);--glass-border:rgba(244,240,232,.16);--glass-solid:#1c293a;--scrim-top:rgba(10,15,25,.55);--scrim-bottom:rgba(10,15,25,.74)}
+body[data-theme="blush"]{--glass:rgba(255,255,255,.55);--glass-border:rgba(236,72,153,.32);--glass-solid:rgba(255,255,255,.82);--scrim-top:rgba(61,20,45,.52);--scrim-bottom:rgba(61,20,45,.72)}
+body[data-theme="pine"]{--glass:rgba(255,255,255,.55);--glass-border:rgba(22,101,52,.28);--glass-solid:rgba(255,255,255,.85);--scrim-top:rgba(12,45,26,.5);--scrim-bottom:rgba(12,45,26,.7)}
+body[data-theme="daylight"]{--glass:rgba(255,255,255,.6);--glass-border:rgba(100,116,139,.3);--glass-solid:#ffffff;--scrim-top:rgba(30,41,59,.5);--scrim-bottom:rgba(30,41,59,.7)}
+body[data-theme="dusk"]{--glass:rgba(255,255,255,.12);--glass-border:rgba(255,255,255,.2);--glass-solid:#2a2060;--scrim-top:rgba(12,8,32,.55);--scrim-bottom:rgba(12,8,32,.74)}
+body[data-theme="midnight"]{--glass:rgba(255,255,255,.1);--glass-border:rgba(255,255,255,.18);--glass-solid:#0b1b3a;--scrim-top:rgba(2,6,23,.55);--scrim-bottom:rgba(2,6,23,.74)}
+
+/* --- Liquid-glass cards (Perch panel) --- */
+.card{background:var(--glass);border:1px solid var(--glass-border);border-radius:24px;
+  backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);
+  box-shadow:0 12px 32px rgba(0,0,0,.26)}
+/* Fallback: no backdrop-filter support -> solid panels (still readable). */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .card{background:var(--glass-solid)}
+  #panelSwitcher{background:var(--bg2)}
+  .room-device{background:rgba(17,26,41,.82)}
+}
+
+/* --- Thinner, tracked type (Homio-flavoured, brand-safe) --- */
+.title{font-weight:200;letter-spacing:.12em;text-transform:uppercase;font-size:clamp(26px,4.5vw,36px)}
+.card h2{font-weight:300;letter-spacing:.16em;text-transform:uppercase;font-size:15px}
+.card h3{letter-spacing:.14em;font-weight:400}
+.lunch-head{font-weight:200;letter-spacing:.04em}
+.wx .temp{font-weight:200;letter-spacing:.02em}
+.dateline{letter-spacing:.06em}
+
+/* Slimmer header chrome, more air. */
+header{padding:26px 22px 8px}
+.hero{margin:10px 22px 18px}
+
+/* Glass switcher bar. Solid fallback first (color-mix is Safari 16.2+;
+   iOS 15 ignores the color-mix line and keeps the solid). */
+#panelSwitcher{background:var(--glass-solid);
+  background:color-mix(in srgb,var(--bg2) 72%,transparent);
+  backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3)}
+#panelSwitcher button{border-radius:18px}
+
+/* Viewer toggle + density: rounder, lighter. */
+.viewer-toggle{border-radius:999px}
+.viewer-toggle button{padding:12px 24px}
+
+/* ============================================================
+   SMART HOME PANEL — room rail + photo hero + glass devices
+   ============================================================ */
+
+/* Simple touch nav: one big room button per room, thumb-sized. */
+.room-rail{display:flex;gap:10px;padding:2px 22px 14px}
+.room-rail .room-btn{flex:1;min-height:60px;border:1px solid var(--glass-border);
+  background:var(--glass);color:var(--ink);border-radius:18px;cursor:pointer;
+  font-size:17px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.room-rail .room-btn.active{background:var(--accent);border-color:var(--accent);color:var(--on-accent,#fff)}
+
+/* Photo hero: full-bleed room photo, scrim, huge thin title, minimal stats. */
+.room-hero{position:relative;margin:0 22px 16px;border-radius:26px;overflow:hidden;
+  min-height:480px;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:28px;box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.room-hero-photo{position:absolute;inset:0;background-size:cover;background-position:center}
+.room-hero-scrim{position:absolute;inset:0;
+  background:linear-gradient(180deg,var(--scrim-top) 0%,transparent 42%,var(--scrim-bottom) 100%)}
+.room-hero-title{position:relative;color:#fff;font-size:clamp(44px,9vw,92px);font-weight:200;
+  letter-spacing:.18em;text-transform:uppercase;line-height:1;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+.room-hero-stats{position:relative;color:rgba(255,255,255,.88);letter-spacing:.14em;
+  text-transform:uppercase;font-size:13px;font-weight:400;margin-top:12px;display:flex;gap:20px;flex-wrap:wrap}
+
+/* Glass device tiles floating over the photo. Dark glass + white text in
+   both themes so they read over any photo; accent shows in the state chip. */
+.room-devices{position:relative;display:grid;gap:10px;grid-template-columns:1fr;margin-top:20px}
+@media (min-width:700px){.room-devices{grid-template-columns:1fr 1fr}}
+.room-device{display:flex;align-items:center;gap:12px;text-align:left;width:100%;
+  min-height:64px;padding:14px 16px;cursor:pointer;border-radius:18px;
+  border:1px solid rgba(255,255,255,.22);background:rgba(17,26,41,.55);color:#fff;
+  backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);
+  font-size:16px;box-sizing:border-box}
+.room-device .dev-name{flex:1}
+.room-device .dev-name b{display:block;font-weight:600}
+.room-device .dev-name small{display:block;color:rgba(255,255,255,.72);font-size:13px}
+.room-device .dev-state{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  border-radius:999px;padding:6px 12px;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.85)}
+.room-device.on .dev-state{background:var(--accent);border-color:var(--accent);color:var(--on-accent,#111a29)}
+.room-device .dev-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);flex:none}
+.room-device.on .dev-dot{background:var(--accent)}
+
+/* Devices & batteries strip: small glass tiles with a battery bar. */
+.device-strip{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:700px){.device-strip{grid-template-columns:repeat(3,1fr)}}
+.device-tile{background:var(--cell);border:1px solid var(--card-border);border-radius:16px;padding:14px}
+.device-tile b{display:block;font-size:15px}
+.device-tile .batt{font-size:28px;font-weight:200;margin:4px 0 6px}
+.device-tile .batt-bar{height:6px;border-radius:3px;background:var(--card-border);overflow:hidden}
+.device-tile .batt-fill{display:block;height:100%;background:var(--accent);border-radius:3px}
+.device-tile small{color:var(--muted)}
+
+/* Alarm pill on the Smart Home header. */
+#alarmPill{border-color:var(--good);color:var(--good)}
+
+/* ============================================================
+   DESIGN v2 2026-11-11 — tranquil iteration (mockup only).
+   Trevor's brief: tranquil, not busy. Negative space, transparent
+   and frosted panels, minimal text, 1-tap navigation to dig deeper.
+   Photos washed out for contrast; frosted panels do the rest.
+   Palettes chosen per element by contrast/readability, not by rule:
+   Trevor — navy / amber / white; Leslie — soft pinks, purples, teals.
+   Layers on top of design-2026-11-11.css (v1 glass tokens + room
+   styles) — this file only adds/overrides for v2.
+   ============================================================ */
+
+/* --- v2 tokens: wash tint + secondary accent, per theme --- */
+body[data-theme="northdatum-dark"]{--wash-tint:rgba(17,26,41,.72);--accent2:#e8b456}
+body[data-theme="blush"]{--wash-tint:rgba(252,231,243,.62);--accent2:#0f766e}
+body[data-theme="pine"]{--wash-tint:rgba(220,252,231,.6);--accent2:#15803d}
+body[data-theme="daylight"]{--wash-tint:rgba(244,241,234,.62);--accent2:#0f766e}
+body[data-theme="dusk"]{--wash-tint:rgba(30,27,75,.7);--accent2:#c4b5fd}
+body[data-theme="midnight"]{--wash-tint:rgba(2,6,23,.72);--accent2:#93c5fd}
+
+/* --- Perch panel: Trevor's family photo as a washed-out backdrop --- */
+#panel-perch{position:relative;z-index:0}
+.perch-bg{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.perch-bg-photo{position:absolute;inset:0;background-size:cover;background-position:center 38%;
+  filter:saturate(.55) brightness(1.08) contrast(.92)}
+.perch-wash{position:absolute;inset:0;background:var(--wash-tint)}
+/* Hero band goes glass in v2 so the photo breathes through (was solid
+   deep teal on the dark theme). */
+body[data-theme="northdatum-dark"] .hero{background:var(--glass)}
+
+/* --- More spacing, more breathing room (Perch panel) --- */
+.grid{gap:28px;padding:0 28px 28px}
+.card{padding:28px}
+header{padding:30px 28px 10px}
+.hero{margin:16px 28px 22px}
+footer{padding:0 28px 30px}
+.room-rail{padding:2px 28px 16px}
+.room-hero{margin:0 28px 18px}
+#panel-perch .card h2{margin-bottom:16px}
+
+/* --- Washed-out hero photos (CSS wash on top of the baked wash) --- */
+.room-hero-photo{filter:saturate(.6) brightness(1.06) contrast(.92)}
+#exteriorHeroPhoto{background-position:center 58%}
+
+/* --- Expandable Perch cards: collapsed-first, 1-tap to dig deeper --- */
+.x-card>h2{cursor:pointer}
+.x-card>h2::after{content:"+";float:right;font-weight:200;font-size:24px;line-height:1;color:var(--muted)}
+.x-card.x-open>h2::after{content:"\2212"}
+.x-card.x-collapsed>*:not(h2):not(.x-summary){display:none}
+.x-summary{color:var(--muted);font-size:14px;line-height:1.5;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.x-card.x-open .x-summary{display:none}
+
+/* --- Room / exterior expand toggles: one big glass button --- */
+.room-expand{position:relative;width:100%;min-height:56px;margin-top:18px;
+  border:1px solid rgba(255,255,255,.22);border-radius:18px;cursor:pointer;
+  background:rgba(17,26,41,.55);color:#fff;font-size:16px;font-weight:600;letter-spacing:.06em;
+  backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2)}
+.room-devices.collapsed{display:none}
+.ext-detail{display:none;color:rgba(255,255,255,.72);font-size:13px;margin-top:2px}
+.ext-card.open .ext-detail{display:block}
+
+/* ============================================================
+   TOP NAV (desktop) + DRAWER NAV (tablet/mobile)
+   Trigger is NOT a hamburger: tapping "The Perch" (brand, top left)
+   opens the drawer. Desktop keeps the full top nav bar (Homio
+   desktop); below 900px the links hide and the drawer is the nav.
+   ============================================================ */
+#topNav{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:18px;
+  padding:10px 22px;background:var(--glass);border-bottom:1px solid var(--glass-border);
+  backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25)}
+#brandNav{border:0;background:transparent;color:var(--ink);font-size:22px;font-weight:200;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:8px 4px;min-height:48px;
+  white-space:nowrap}
+.topnav-links{display:flex;gap:2px;flex:1;justify-content:center;flex-wrap:wrap}
+.topnav-links button{border:0;background:transparent;color:var(--muted);font-size:15px;font-weight:600;
+  letter-spacing:.06em;padding:10px 12px;min-height:44px;cursor:pointer;border-radius:10px}
+.topnav-links button.active{color:var(--accent)}
+.topnav-links button:hover{color:var(--ink)}
+.topnav-clock{color:var(--muted);font-size:15px;letter-spacing:.06em;white-space:nowrap}
+@media (max-width:899px){.topnav-links{display:none}}
+
+#drawerScrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70}
+#navDrawer{position:fixed;top:0;left:0;bottom:0;width:min(340px,86vw);z-index:80;
+  transform:translateX(-105%);transition:transform .28s ease;
+  background:var(--glass);border-right:1px solid var(--glass-border);
+  backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);
+  padding:20px 18px 28px;overflow-y:auto;box-sizing:border-box}
+#navDrawer.open{transform:translateX(0)}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.drawer-brand{font-size:22px;font-weight:200;letter-spacing:.14em;text-transform:uppercase}
+#drawerClose{border:0;background:transparent;color:var(--ink);font-size:32px;line-height:1;
+  cursor:pointer;min-width:48px;min-height:48px}
+.drawer-section h3{margin:22px 0 8px;font-size:13px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted)}
+.drawer-row{display:block;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--ink);font-size:18px;font-weight:500;padding:14px 12px;min-height:60px;
+  cursor:pointer;border-radius:14px}
+.drawer-row.active{background:var(--accent);color:var(--on-accent,#fff)}
+.drawer-foot{margin-top:28px;color:var(--muted);font-size:14px}
+
+/* Glass fallback for the v2 chrome where backdrop-filter is unsupported. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #topNav{background:var(--glass-solid)}
+  #navDrawer{background:var(--glass-solid)}
+  .room-expand{background:rgba(17,26,41,.85)}
+}

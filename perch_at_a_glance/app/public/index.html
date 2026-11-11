@@ -7,11 +7,55 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="northdatum-dark" data-panel="perch">
+<!-- ======================= TOP NAV + DRAWER NAV (Design v2) ======================= -->
+<!-- Desktop: full top nav bar (Homio desktop). Tablet/mobile: links hide and
+     the drawer is the nav. The trigger is NOT a hamburger — tapping "The
+     Perch" (brand, top left) opens the drawer; tap again, X, or tap outside
+     to close. Drawer carries panels + rooms + viewer toggle. -->
+<nav id="topNav" aria-label="Top navigation">
+  <button type="button" id="brandNav" aria-label="Open navigation">The Perch</button>
+  <div class="topnav-links" id="topNavLinks">
+    <button type="button" id="navTopPerch" data-nav="perch">Perch at a Glance</button>
+    <button type="button" id="navTopHome" data-nav="home">Smart Home</button>
+    <button type="button" id="navTopMain" data-nav="room-mainfloor">Main Floor</button>
+    <button type="button" id="navTopSecond" data-nav="room-secondfloor">Second Floor</button>
+    <button type="button" id="navTopDen" data-nav="room-den">Den</button>
+    <button type="button" id="navTopExt" data-nav="exterior">Exterior</button>
+  </div>
+  <div class="topnav-clock" id="topNavClock"></div>
+</nav>
+<div id="drawerScrim" hidden></div>
+<aside id="navDrawer" aria-label="Navigation drawer">
+  <div class="drawer-head">
+    <span class="drawer-brand">The Perch</span>
+    <button type="button" id="drawerClose" aria-label="Close navigation">&times;</button>
+  </div>
+  <div class="drawer-section">
+    <h3>Panels</h3>
+    <button type="button" class="drawer-row" id="navDrPerch" data-nav="perch">Perch at a Glance</button>
+    <button type="button" class="drawer-row" id="navDrHome" data-nav="home">Smart Home</button>
+  </div>
+  <div class="drawer-section">
+    <h3>Rooms</h3>
+    <button type="button" class="drawer-row" id="navDrMain" data-nav="room-mainfloor">Main Floor</button>
+    <button type="button" class="drawer-row" id="navDrSecond" data-nav="room-secondfloor">Second Floor</button>
+    <button type="button" class="drawer-row" id="navDrDen" data-nav="room-den">Den</button>
+    <button type="button" class="drawer-row" id="navDrExt" data-nav="exterior">Exterior</button>
+  </div>
+  <div class="drawer-section">
+    <h3>Viewing as</h3>
+    <button type="button" class="drawer-row" id="navDrTrevor" data-viewer="trevor">Trevor</button>
+    <button type="button" class="drawer-row" id="navDrLeslie" data-viewer="leslie">Leslie</button>
+  </div>
+  <div class="drawer-foot" id="drawerClock"></div>
+</aside>
+
 <!-- ======================= PERCH PANEL (Phase 1: feed-only) ======================= -->
 <div id="panel-perch" class="panel">
+  <div class="perch-bg" aria-hidden="true"><div class="perch-bg-photo" id="perchBgPhoto"></div><div class="perch-wash"></div></div>
   <header>
     <div>
-      <div class="title"><span class="brand-mark" id="brandDot" title="Northdatum"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="32" height="32" role="img" aria-label="Northdatum reverse datum mark"><title>Northdatum reverse datum mark</title><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"><circle cx="110" cy="110" r="72" stroke-width="11.5"/><path d="M110 9V32 M110 188V211 M9 110H32 M188 110H211" stroke-width="12"/><circle cx="110" cy="110" r="18" fill="#D89A2C" stroke="none"/></g></svg></span> The Perch at a Glance</div>
+      <div class="title" id="perchTitle"><span class="brand-mark" id="brandDot" title="Northdatum"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="32" height="32" role="img" aria-label="Northdatum reverse datum mark"><title>Northdatum reverse datum mark</title><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"><circle cx="110" cy="110" r="72" stroke-width="11.5"/><path d="M110 9V32 M110 188V211 M9 110H32 M188 110H211" stroke-width="12"/><circle cx="110" cy="110" r="18" fill="#D89A2C" stroke="none"/></g></svg></span> The Perch at a Glance</div>
       <div class="viewer-sub" id="viewerSub" hidden></div>
       <div class="dateline"><span id="clockLine">--:--</span> &middot; <span id="dateLine"></span></div>
     </div>
@@ -42,12 +86,12 @@
 
   <main class="grid">
     <section class="card" id="secWhosWhere" aria-label="Who's Where">
-      <h2>Who&rsquo;s Where</h2>
+      <h2 id="x-h2-secWhosWhere">Who&rsquo;s Where</h2><div class="x-summary" id="x-sum-secWhosWhere"></div>
       <div id="whosWhere"></div>
     </section>
 
     <section class="card span-2" id="secSchedule" aria-label="Household Schedule">
-      <h2>Household Schedule</h2>
+      <h2 id="x-h2-secSchedule">Household Schedule</h2><div class="x-summary" id="x-sum-secSchedule"></div>
       <div class="weeknav">
         <button type="button" id="prevWeek" aria-label="Previous week">&larr; Prev</button>
         <button type="button" id="todayBtn">Today</button>
@@ -58,7 +102,7 @@
     </section>
 
     <section class="card span-2" id="secBoysDay" aria-label="The Boys' Day">
-      <h2>The Boys&rsquo; Day</h2>
+      <h2 id="x-h2-secBoysDay">The Boys&rsquo; Day</h2><div class="x-summary" id="x-sum-secBoysDay"></div>
       <div class="lunch-head" id="lunchHead">Pack Lunch</div>
       <div class="lunch-sub" id="lunchSub"></div>
       <div class="boys-grid" id="boysGrid"></div>
@@ -66,7 +110,7 @@
     </section>
 
     <section class="card" id="secTasks" aria-label="Tasks and Checklists">
-      <h2>Tasks &amp; Checklists</h2>
+      <h2 id="x-h2-secTasks">Tasks &amp; Checklists</h2><div class="x-summary" id="x-sum-secTasks"></div>
       <div id="taskList"></div>
       <div class="quickadd">
         <input type="text" id="quickTaskTitle" placeholder="Add a task&hellip;" aria-label="Add a task">
@@ -80,7 +124,7 @@
     </section>
 
     <section class="card" id="secShop" aria-label="Shopping">
-      <h2>Shopping</h2>
+      <h2 id="x-h2-secShop">Shopping</h2><div class="x-summary" id="x-sum-secShop"></div>
       <div id="shopList"></div>
       <div class="quickadd">
         <input type="text" id="quickShopLabel" placeholder="Add a grocery item&hellip;" aria-label="Add a grocery item">
@@ -95,13 +139,13 @@
     </section>
 
     <section class="card" id="secLookout" aria-label="The Lookout">
-      <h2>The Lookout</h2>
+      <h2 id="x-h2-secLookout">The Lookout</h2><div class="x-summary" id="x-sum-secLookout"></div>
       <div id="lookoutBody"></div>
       <div class="forecast-strip" id="lookoutForecast"></div>
     </section>
 
     <section class="card" id="secFlags" aria-label="Noticed">
-      <h2>Noticed</h2>
+      <h2 id="x-h2-secFlags">Noticed</h2><div class="x-summary" id="x-sum-secFlags"></div>
       <div id="flagList"></div>
     </section>
   </main>
@@ -109,38 +153,70 @@
   <footer>
     <span id="lastUpdated">Last updated: &mdash;</span><br>
     <span id="feedFreshness"></span><br>
-    <span>Perch at a Glance v0.1.0 &middot; Phase 1 feed-only (Skipper + Amanda) &middot; Weather: Open-Meteo</span>
+    <span>Perch at a Glance v0.1.4 &middot; Phase 1 feed-only (Skipper + Amanda) &middot; Weather: Open-Meteo</span>
   </footer>
 </div>
 
-<!-- ======================= SMART HOME PANEL (Phase 2 stub) ======================= -->
+<!-- ======================= SMART HOME PANEL (Design v2 2026-11-11) ======================= -->
+<!-- Tranquil iteration: interior + exterior sections, each a washed-out hero
+     of Trevor's own house; rooms and cards start collapsed to a minimal
+     summary and expand with one tap. Phase 2 preview: device states are
+     illustrative and the toggles are visual-only (they flip locally, nothing
+     talks to Home Assistant yet). Photos are Trevor's own (front of house at
+     dusk, backyard at night). -->
 <div id="panel-home" class="panel" hidden>
   <header>
     <div>
       <div class="title">Smart Home</div>
       <div class="viewer-sub" id="viewerSubHome" hidden></div>
-      <div class="dateline">Phase 2 &middot; read-only Home Assistant states &middot; one-touch actions are Phase 3</div>
+      <div class="dateline">Phase 2 preview &middot; device states illustrative &middot; live states land in Phase 2</div>
     </div>
     <div class="head-right">
-      <span class="pill">COMING IN PHASE 2</span>
+      <span class="pill" id="alarmPill">Alarm &middot; Disarmed</span>
     </div>
   </header>
-  <main class="grid sh-dark">
-    <section class="card"><h2>Rooms</h2><p>Room grid with per-room device states. <span class="chip provisional">Planned</span></p></section>
-    <section class="card"><h2>Devices &amp; Accessories</h2><p>Device cards with on/off + state (lights, plugs, TV, speakers). <span class="chip provisional">Planned</span></p></section>
-    <section class="card"><h2>Network</h2><p>Router stats: download / upload / latency. <span class="chip provisional">Planned</span></p></section>
-    <section class="card"><h2>LED Brightness</h2><p>Brightness dial + effects. <span class="chip provisional">Planned</span></p></section>
-    <section class="card"><h2>Music</h2><p>Now playing + playback controls. <span class="chip provisional">Planned</span></p></section>
-    <section class="card"><h2>Climate</h2><p>Temperature dial, swing mode, wind level. <span class="chip provisional">Planned</span></p></section>
-    <section class="card"><h2>Electricity</h2><p>Consumption chart. <span class="chip provisional">Planned</span></p></section>
-    <section class="card"><h2>Voice Assistant</h2><p>Voice command status. <span class="chip provisional">Planned</span></p></section>
-    <section class="card span-2"><h2>3D Floor Plan</h2><p>Floor plan with per-room temperatures and states. <span class="chip provisional">Planned</span></p></section>
+
+  <div class="room-rail" role="group" aria-label="Rooms">
+    <button type="button" class="room-btn active" id="roomBtnMain" data-room="mainfloor">Main Floor</button>
+    <button type="button" class="room-btn" id="roomBtnSecond" data-room="secondfloor">Second Floor</button>
+    <button type="button" class="room-btn" id="roomBtnDen" data-room="den">Den</button>
+    <button type="button" class="room-btn" id="roomBtnExterior" data-room="exterior">Exterior</button>
+  </div>
+
+  <section class="room-hero" id="roomHero" aria-label="Interior room">
+    <div class="room-hero-photo" id="roomHeroPhoto"></div>
+    <div class="room-hero-scrim"></div>
+    <div class="room-hero-title" id="roomHeroTitle">Main Floor</div>
+    <div class="room-hero-stats" id="roomHeroStats"></div>
+    <button type="button" class="room-expand" id="roomExpandBtn">Show lights</button>
+    <div class="room-devices collapsed" id="roomDevices"></div>
+  </section>
+
+  <section class="room-hero" id="exteriorHero" aria-label="Exterior" hidden>
+    <div class="room-hero-photo" id="exteriorHeroPhoto"></div>
+    <div class="room-hero-scrim"></div>
+    <div class="room-hero-title" id="exteriorHeroTitle">Exterior</div>
+    <div class="room-hero-stats" id="exteriorHeroStats"></div>
+    <button type="button" class="room-expand" id="extExpandBtn">Show yard</button>
+    <div class="room-devices collapsed" id="exteriorCards"></div>
+  </section>
+
+  <main class="grid">
+    <section class="card" id="secDevices" aria-label="Devices and batteries">
+      <h2>Devices &amp; Batteries</h2>
+      <div class="device-strip" id="deviceStrip"></div>
+      <p class="muted-note">Battery readings from Nov 10 evening (Trevor&rsquo;s iPhone 50%, Leslie&rsquo;s iPhone 34%, master bedroom iPad 52%) &mdash; live values come with Phase 2. Alarm state as of Nov 10: disarmed.</p>
+    </section>
+    <section class="card" id="secHomeNote" aria-label="About this panel">
+      <h2>About this panel</h2>
+      <p>Photos are Trevor&rsquo;s own house &mdash; front of house at dusk for the interior section, backyard at night for the exterior. Both are washed out so text reads over them. Lighting groups are the real ones from the house: Main Floor (kitchen pots, White Lamp, Black Lamp, Reading Lamp, Mudroom), Second Floor (Makeup Room lamp, Bathroom Scentsy), Den (Den Light 1 + 2).</p>
+      <p class="muted-note">Yard states (string lights, driveway, cameras) are illustrative summaries for now. Phase 2 wires this panel to live Home Assistant states; Phase 3 adds one-touch actions.</p>
+    </section>
   </main>
   <footer>
-    <span>Visual reference: docs/phase2-reference/ (rooms/accessories dashboards + 3D floor plan).</span>
+    <span>Phase 2 preview &mdash; device states are illustrative until this panel wires to live Home Assistant states.</span>
   </footer>
 </div>
-
 <!-- ======================= PROMINENT PANEL SWITCHER ======================= -->
 <!-- Always visible, wall-tablet sized. Tap or swipe left/right to switch. -->
 <nav id="panelSwitcher" aria-label="Switch panel">
@@ -148,6 +224,7 @@
   <button type="button" id="switchHome" data-panel="home">Smart Home</button>
 </nav>
 
+<script src="rooms.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

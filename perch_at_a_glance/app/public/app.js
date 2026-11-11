@@ -343,6 +343,9 @@ function renderAll() {
   renderFlags();
   renderFooter();
   applyViewer();
+  /* Design v2: Perch-card summaries were empty at init (state arrives
+     async); refresh them now that state is rendered. */
+  if (typeof refreshPerchSummaries === "function") refreshPerchSummaries();
 }
 
 function getJson(path, cb) {
@@ -454,6 +457,9 @@ function init() {
   fetchState();
   setInterval(fetchState, pollMs());
   setInterval(renderClock, 30000);
+  /* Design v2: rooms + drawer nav + expandable Perch cards (rooms.js). */
+  if (typeof initRooms === "function") initRooms();
+  if (typeof initV2 === "function") initV2();
 }
 
 if (typeof document !== "undefined" && document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
