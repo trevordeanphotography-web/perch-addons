@@ -257,7 +257,7 @@ function renderTasks() {
   $("taskList").innerHTML = html || '<p style="color:var(--muted)">No tasks fed yet.</p>';
   var boxes = $("taskList").querySelectorAll("[data-task]");
   for (var k = 0; k < boxes.length; k++) boxes[k].addEventListener("change", function (e) {
-    postJson("/api/task-state", { id: e.target.getAttribute("data-task"), reported_done: e.target.checked }, function () { fetchState(); });
+    postJson("api/task-state", { id: e.target.getAttribute("data-task"), reported_done: e.target.checked }, function () { fetchState(); });
   });
 }
 
@@ -373,7 +373,7 @@ function postJson(path, body, cb) {
 }
 
 function fetchState() {
-  getJson("/api/state", function (err, data) {
+  getJson("api/state", function (err, data) {
     if (err) {
       $("lastUpdated").textContent = "Couldn\u2019t refresh — showing last good data.";
       return;
@@ -437,14 +437,14 @@ function init() {
     var input = $("quickTaskTitle");
     var title = input.value.replace(/^\s+|\s+$/g, "");
     if (!title) { input.focus(); return; }
-    postJson("/api/quickadd", { kind: "task", label: title, list: $("quickTaskList").value }, function () { input.value = ""; fetchState(); });
+    postJson("api/quickadd", { kind: "task", label: title, list: $("quickTaskList").value }, function () { input.value = ""; fetchState(); });
   });
   $("quickTaskTitle").addEventListener("keydown", function (e) { if (e.key === "Enter") $("quickTaskBtn").click(); });
   $("quickShopBtn").addEventListener("click", function () {
     var input = $("quickShopLabel");
     var label = input.value.replace(/^\s+|\s+$/g, "");
     if (!label) { input.focus(); return; }
-    postJson("/api/quickadd", { kind: "shopping", label: label, group: $("quickShopGroup").value }, function () { input.value = ""; fetchState(); });
+    postJson("api/quickadd", { kind: "shopping", label: label, group: $("quickShopGroup").value }, function () { input.value = ""; fetchState(); });
   });
   $("quickShopLabel").addEventListener("keydown", function (e) { if (e.key === "Enter") $("quickShopBtn").click(); });
 

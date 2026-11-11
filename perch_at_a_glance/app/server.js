@@ -555,7 +555,7 @@ function handler(req, res) {
   var parsed = new URL(req.url, "http://localhost");
   var pathname = parsed.pathname || "/";
   if (req.method === "GET" && pathname === "/api/state") { sendJson(res, 200, buildState()); return; }
-  if (req.method === "GET" && pathname === "/health") { sendJson(res, 200, { ok: true, version: "0.1.0", phase: 1 }); return; }
+  if (req.method === "GET" && pathname === "/health") { sendJson(res, 200, { ok: true, version: "0.1.3", phase: 1 }); return; }
   if (req.method === "POST" && pathname === "/api/feed") {
     if (!FEED_TOKENS.skipper && !FEED_TOKENS.amanda) {
       sendJson(res, 503, { error: "feed not configured: no assistant tokens set" }); return;
