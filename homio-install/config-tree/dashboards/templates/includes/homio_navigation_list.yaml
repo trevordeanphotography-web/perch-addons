@@ -1,0 +1,105 @@
+# Nav list for The Perch — mirrors Trevor's Google Home rooms 1:1.
+# One entry per room page in homio.yaml (name + path must match the view).
+# Paths are the Homio dashboard URLs: /dashboard-homio/<path>.
+# First entry is the way back to the Perch board. It is NOT a room page:
+# the Perch app runs on its own port (8099), so this card uses the url
+# action (same tab) instead of the template's navigate action, which only
+# works for HA-internal paths. LAN URL (Trevor-confirmed working); remote
+# access needs the remote board URL once that is set up. variables.path is
+# kept (empty) so the template's active-underline check never sees an
+# undefined variable.
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Perch at a Glance
+  variables:
+    path: ""
+  tap_action:
+    action: url
+    url_path: "http://192.168.5.131:8099/"
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Welcome
+  variables:
+    path: /dashboard-homio/welcome
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Living Room
+  variables:
+    path: /dashboard-homio/living-room
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Kitchen
+  variables:
+    path: /dashboard-homio/kitchen
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Den
+  variables:
+    path: /dashboard-homio/den
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Hallway
+  variables:
+    path: /dashboard-homio/hallway
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Bathroom
+  variables:
+    path: /dashboard-homio/bathroom
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Master Bedroom
+  variables:
+    path: /dashboard-homio/master-bedroom
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Makeup Room
+  variables:
+    path: /dashboard-homio/makeup-room
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Mud Room
+  variables:
+    path: /dashboard-homio/mud-room
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Nursery
+  variables:
+    path: /dashboard-homio/nursery
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Garage
+  variables:
+    path: /dashboard-homio/garage
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Backyard
+  variables:
+    path: /dashboard-homio/backyard
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Driveway
+  variables:
+    path: /dashboard-homio/driveway
+- type: custom:button-card
+  template:
+    - homio_nav_button
+  name: Front Yard
+  variables:
+    path: /dashboard-homio/front-yard
+# TODO: boys' rooms (Robbie Dean / Keagan) — add entries here + views in
+# homio.yaml once Trevor sends those screenshots.

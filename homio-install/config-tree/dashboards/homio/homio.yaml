@@ -1,0 +1,683 @@
+# Homio dashboard for The Perch (Trevor Rideout)
+# Status: 2026-11-23 ~21:15 NST. ALL rooms built from TWO verified sources:
+# (1) the live HA entity pull 2026-11-23 (596 entities,
+# ha-states-2026-11-23.json) and (2) Trevor's Google Home screenshots
+# 2026-11-23 ~21:02-21:09 (14 rooms). Room pages mirror his Google Home
+# rooms 1:1 — that IS the room list now.
+#
+# Interaction model (from homio_light.yaml — tell Leslie this once):
+#   tap a light that is OFF  -> turns it ON
+#   tap a light that is ON   -> does nothing (avoids accidental switch-offs)
+#   hold a light that is ON  -> turns it OFF
+#   slider appears under a light that is ON -> drag to dim
+#   tap a switch/plug/speaker -> toggles it
+#   tap the Mudroom Door lock -> locks / unlocks it
+#   tap the Alarm -> opens HA's alarm dialog (arm home / arm away / disarm)
+#   hold the Alarm -> arms Away immediately (one gesture when heading out)
+#
+# Alarm + lock, decided by Trevor 2026-11-23 ("alarm and door lock would be
+# handy to have"): both are live controls now, NOT state-only. The alarm
+# entity reports code_format: None, so HA arms/disarms it with no code —
+# the dialog works straight away. A plain toggle card would NOT have worked
+# for the alarm (alarm panels have no toggle service), which is why tap is
+# more-info and hold is an explicit arm-away service call.
+#
+# Corrections vs the first draft (the screenshots settled these):
+# - Pot Lights 1-4 are ALL Kitchen (Google Home + the kitchen pot-light
+#   automations). The HA entity IDs light.living_room_1/2 ("Pot Light 3/4")
+#   are misleading Tuya names — the living room has no pot lights at all.
+#   Living Room lights are Black Lamp + White Lamp + Christmas Tree only.
+# - "Reading Lamp" in the living room IS the Christmas tree:
+#   switch.living_room_reading_lamp_socket, whose HA friendly name is
+#   already "Christmas Tree". It is labelled Christmas Tree here.
+# - The master bedroom has a SECOND, different Reading Lamp (On 4% in
+#   Google Home) — see "Not in HA" below.
+# - Fancy Lights appears TWICE in Google Home (one Off, one Offline). The
+#   Offline one is the dead switch.mini_plug_socket (unavailable since
+#   Nov 14); only the live switch.mini_plug_4_socket_2 is on the Backyard
+#   page. Worth removing the dead one from the Google Home room.
+# - Fire TV live entities are the long-ID ones (living_room_living_room_
+#   fire_tv, master_master_fire_tv_2, garage_garage_fire_tv). The short
+#   duplicates (living_room_fire_tv "Main Fire TV", master_master_fire_tv,
+#   garage_android_tv_192_168_4_44, our_tv "Garage TV") are off/unavailable.
+#
+# NOT in HA (in Google Home but no HA entity — cannot go on a Homio page):
+# - Master Light 1-4, master Reading Lamp, Master Closet light, Worklight
+#   (garage), Oven upper (kitchen). Either Google-Home-only devices or on
+#   non-smart hardware. Master Closet gets no page (zero HA entities).
+# - No temp/humidity sensors and no climate entities anywhere, so room
+#   heroes show photo + name only (show_temp / show_humid stay off) and
+#   homio_thermostat is unused. No cover entities: garage doors are lights.
+# - Icons must be one of the 19 shipped SVGs (lamp, pendent, plug, door,
+#   apple_tv, power_on, power_off, ...). The README example's `tv` and
+#   `window` icons do NOT exist in the zip, so Fire TVs use apple_tv and
+#   speakers use power_on (no speaker icon shipped yet).
+#
+# Photos: welcome.jpg + exterior.jpg are staged. Every other room photo is
+# still NEEDED (see www/images/Homio/rooms/README.md). A room whose photo
+# is missing still works — the hero just has no background until the photo
+# lands. Front Yard reuses welcome.jpg (it IS the front of the house);
+# Driveway reuses it as a stand-in (noted in the view).
+#
+# Still open: boys' rooms (Robbie Dean / Keagan) were not in this batch of
+# screenshots — if they are Google Home rooms, send those and they get
+# pages. The Fire tablets (media_player.robbie_deans_fire,
+# media_player.keagans_fire) are the only per-boy entities found so far.
+
+button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
+views:
+  - type: custom:grid-layout
+    title: Welcome Home
+    path: welcome
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: welcome
+          image_position: center center
+        template:
+          - homio_room
+        name: Welcome Home
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: alarm_control_panel.upper_gullies_perch_alarm
+            name: Alarm
+            tap_action:
+              action: more-info
+            hold_action:
+              action: call-service
+              service: alarm_control_panel.alarm_arm_away
+              service_data:
+                entity_id: alarm_control_panel.upper_gullies_perch_alarm
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: door
+            entity: lock.exterior_mudroom_door
+            name: Mudroom Door
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: door
+            entity: binary_sensor.front_door
+            name: Front Door
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: door
+            entity: binary_sensor.patio_door
+            name: Patio Door
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: door
+            entity: binary_sensor.mud_room_door
+            name: Mud Room Door
+
+  - type: custom:grid-layout
+    title: Living Room
+    path: living-room
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: living_room
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.living_room_motion
+        template:
+          - homio_room
+        name: Living Room
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: lamp
+            entity: light.merkury_bw904_smart_bulb
+            name: Black Lamp
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: lamp
+            entity: light.a19_color_9
+            name: White Lamp
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.living_room_reading_lamp_socket
+            name: Christmas Tree
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: apple_tv
+            entity: media_player.living_room_living_room_fire_tv
+            name: Living Room Fire TV
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: media_player.playroom_speaker
+            name: Living Room Speaker
+
+  - type: custom:grid-layout
+    title: Kitchen
+    path: kitchen
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: kitchen
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.kitchen_motion
+        template:
+          - homio_room
+        name: Kitchen
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.a19_color_10
+            name: Pot Light 1
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.a19_color_11
+            name: Pot Light 2
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.living_room_1
+            name: Pot Light 3
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.living_room_2
+            name: Pot Light 4
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.fridge_socket
+            name: Trim Lights
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.kitchen_kettle_socket
+            name: Kettle
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.kitchen_coffee_maker_socket
+            name: Coffee Maker
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: media_player.kitchen_bose_2
+            name: Bose
+
+  - type: custom:grid-layout
+    title: Den
+    path: den
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: den
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.den_motion
+        template:
+          - homio_room
+        name: Den
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: lamp
+            entity: light.a19_color
+            name: Den Light 1
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: lamp
+            entity: light.a19_color_8
+            name: Den Light 2
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: apple_tv
+            entity: media_player.den_den_roku_2
+            name: Den Roku
+
+  - type: custom:grid-layout
+    title: Hallway
+    path: hallway
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: hallway
+          image_position: center center
+        template:
+          - homio_room
+        name: Hallway
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.light_socket
+            name: Night Light 1
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.mini_plug_2_socket
+            name: Night Light 2
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: media_player.office_speaker
+            name: Hall Speaker
+
+  - type: custom:grid-layout
+    title: Bathroom
+    path: bathroom
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: bathroom
+          image_position: center center
+        template:
+          - homio_room
+        name: Bathroom
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.bathroom_socket
+            name: Bathroom Scentsy
+
+  - type: custom:grid-layout
+    title: Master Bedroom
+    path: master-bedroom
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: master
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.master_bedroom_keypad_motion
+        template:
+          - homio_room
+        name: Master Bedroom
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.banister_lights_socket
+            name: Mood Lights
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.mini_plug_3_socket
+            name: Night Light 3
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: apple_tv
+            entity: media_player.master_master_fire_tv_2
+            name: Master Fire TV
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: media_player.master_nest
+            name: Master Nest
+
+  - type: custom:grid-layout
+    title: Makeup Room
+    path: makeup-room
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: makeup
+          image_position: center center
+        template:
+          - homio_room
+        name: Makeup Room
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.makeup_room_socket
+            name: Makeup Room Lamp
+
+  - type: custom:grid-layout
+    title: Mud Room
+    path: mud-room
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: mudroom
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.mud_room_motion
+        template:
+          - homio_room
+        name: Mud Room
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.pot_light_3
+            name: Mudroom
+
+  - type: custom:grid-layout
+    title: Nursery
+    path: nursery
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: nursery
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.nursery_motion
+        template:
+          - homio_room
+        name: Nursery
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: lamp
+            entity: light.nursery_lamp
+            name: Nursery Lamp
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: media_player.nursery_speaker
+            name: Nursery speaker
+
+  - type: custom:grid-layout
+    title: Garage
+    path: garage
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: garage
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.garage_motion
+        template:
+          - homio_room
+        name: Garage
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: lamp
+            entity: light.merkury_bw904_smart_bulb_2
+            name: Hot Tub Light
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.mini_plug_4_socket
+            name: Tub Lights
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: media_player.garage_speaker
+            name: Garage speaker
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.workbench_socket
+            name: Charging Shelf
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: apple_tv
+            entity: media_player.garage_garage_fire_tv
+            name: Garage Fire TV
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: power_on
+            entity: script.hot_tub_soak_mode
+            name: Hot Tub Soak Mode
+
+  - type: custom:grid-layout
+    title: Backyard
+    path: backyard
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: exterior
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.backyard_motion
+        template:
+          - homio_room
+        name: Backyard
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_entity
+            variables:
+              icon: plug
+            entity: switch.mini_plug_4_socket_2
+            name: Fancy Lights
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.patiodoor1
+            name: PatioDoor1
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.patiodoor2
+            name: PatioDoor2
+
+  - type: custom:grid-layout
+    title: Driveway
+    path: driveway
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          # Stand-in: front-of-house photo until a driveway photo lands.
+          image: welcome
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.driveway_motion
+        template:
+          - homio_room
+        name: Driveway
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.garagedoor1
+            name: GarageDoor1
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.garagedoor2
+            name: GarageDoor2
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.mudroomdoor
+            name: MudroomDoor
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.driveway_light
+            name: Driveway Cam Light
+
+  - type: custom:grid-layout
+    title: Front Yard
+    path: front-yard
+    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        variables:
+          image: welcome
+          image_position: center center
+          show_motion: true
+          motion_sensor: binary_sensor.front_bridge_motion
+        template:
+          - homio_room
+        name: Front Yard
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
+        cards:
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.a19_color_7
+            name: Porch1
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.porch2
+            name: Porch2
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.porch3
+            name: Porch3
+          - type: custom:button-card
+            template:
+              - homio_light
+            variables:
+              icon: pendent
+            entity: light.front_bridge_light
+            name: Front Bridge Cam Light
