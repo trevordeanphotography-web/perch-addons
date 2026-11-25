@@ -56,7 +56,7 @@ homio_room:
       motion_detection:
         - display: |
             [[[
-              if (!variables.motion_sensor) {
+              if (!variables.motion_sensor || !states[variables.motion_sensor]) {
                 return 'none';
               }
               else {
@@ -69,7 +69,7 @@ homio_room:
         - bottom: 0
         - transform: |
             [[[
-              if (!variables.motion_sensor) {
+              if (!variables.motion_sensor || !states[variables.motion_sensor]) {
                 return '';
               }
               else {
