@@ -1,9 +1,11 @@
 # Homio dashboard for The Perch (Trevor Rideout)
-# Status: 2026-11-23 ~21:15 NST. ALL rooms built from TWO verified sources:
+# Status: 2026-11-25 ~00:52 NST. ALL rooms built from TWO verified sources:
 # (1) the live HA entity pull 2026-11-23 (596 entities,
 # ha-states-2026-11-23.json) and (2) Trevor's Google Home screenshots
-# 2026-11-23 ~21:02-21:09 (14 rooms). Room pages mirror his Google Home
-# rooms 1:1 — that IS the room list now.
+# 2026-11-23 ~21:02-21:09. Consolidated 2026-11-25 (Trevor): 14 views ->
+# 11. Exterior holds Front Yard + Driveway + Backyard (backyard photo is
+# the hero); Bathroom merged into Hallway; Kitchen covers kitchen + dining
+# (photo shows both). Room pages no longer mirror Google Home 1:1.
 #
 # Interaction model (from homio_light.yaml — tell Leslie this once):
 #   tap a light that is OFF  -> turns it ON
@@ -53,11 +55,12 @@
 #   `window` icons do NOT exist in the zip, so Fire TVs use apple_tv and
 #   speakers use power_on (no speaker icon shipped yet).
 #
-# Photos: welcome.jpg + exterior.jpg are staged. Every other room photo is
-# still NEEDED (see www/images/Homio/rooms/README.md). A room whose photo
-# is missing still works — the hero just has no background until the photo
-# lands. Front Yard reuses welcome.jpg (it IS the front of the house);
-# Driveway reuses it as a stand-in (noted in the view).
+# Photos staged (see www/images/Homio/rooms/README.md): welcome.jpg (front
+# of house, Welcome hero), exterior.jpg (backyard, Exterior hero),
+# mudroom.jpg, garage.jpg, kitchen.jpg, makeup.jpg (all Trevor, Nov 25,
+# washed to match). Still NEEDED: living_room, den, hallway, master,
+# nursery. A room whose photo is missing still works — the hero just has
+# no background until the photo lands.
 #
 # Still open: boys' rooms (Robbie Dean / Keagan) were not in this batch of
 # screenshots — if they are Google Home rooms, send those and they get
@@ -331,23 +334,6 @@ views:
               icon: power_on
             entity: media_player.office_speaker
             name: Hall Speaker
-
-  - type: custom:grid-layout
-    title: Bathroom
-    path: bathroom
-    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
-    cards:
-      - type: custom:button-card
-        variables:
-          image: bathroom
-          image_position: center center
-        template:
-          - homio_room
-        name: Bathroom
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
-        cards:
           - type: custom:button-card
             template:
               - homio_entity
@@ -548,19 +534,22 @@ views:
             name: Hot Tub Soak Mode
 
   - type: custom:grid-layout
-    title: Backyard
-    path: backyard
+    title: Exterior
+    path: exterior
     layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
     cards:
       - type: custom:button-card
         variables:
+          # Backyard photo is the hero for the whole exterior.
+          # Motion banner uses the backyard sensor (hero match); driveway
+          # and front-yard motion do not trigger it on this page.
           image: exterior
           image_position: center center
           show_motion: true
           motion_sensor: binary_sensor.backyard_motion
         template:
           - homio_room
-        name: Backyard
+        name: Exterior
       - type: custom:layout-card
         layout_type: custom:grid-layout
         layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
@@ -586,26 +575,6 @@ views:
               icon: pendent
             entity: light.patiodoor2
             name: PatioDoor2
-
-  - type: custom:grid-layout
-    title: Driveway
-    path: driveway
-    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
-    cards:
-      - type: custom:button-card
-        variables:
-          # Stand-in: front-of-house photo until a driveway photo lands.
-          image: welcome
-          image_position: center center
-          show_motion: true
-          motion_sensor: binary_sensor.driveway_motion
-        template:
-          - homio_room
-        name: Driveway
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
-        cards:
           - type: custom:button-card
             template:
               - homio_light
@@ -634,25 +603,6 @@ views:
               icon: pendent
             entity: light.driveway_light
             name: Driveway Cam Light
-
-  - type: custom:grid-layout
-    title: Front Yard
-    path: front-yard
-    layout: !include /config/dashboards/templates/includes/homio_screen_layout.yaml
-    cards:
-      - type: custom:button-card
-        variables:
-          image: welcome
-          image_position: center center
-          show_motion: true
-          motion_sensor: binary_sensor.front_bridge_motion
-        template:
-          - homio_room
-        name: Front Yard
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout: !include /config/dashboards/templates/includes/homio_entity_layout.yaml
-        cards:
           - type: custom:button-card
             template:
               - homio_light

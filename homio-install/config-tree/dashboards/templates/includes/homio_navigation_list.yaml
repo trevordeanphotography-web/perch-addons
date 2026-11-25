@@ -50,12 +50,6 @@
 - type: custom:button-card
   template:
     - homio_nav_button
-  name: Bathroom
-  variables:
-    path: /dashboard-homio/bathroom
-- type: custom:button-card
-  template:
-    - homio_nav_button
   name: Master Bedroom
   variables:
     path: /dashboard-homio/master-bedroom
@@ -86,20 +80,8 @@
 - type: custom:button-card
   template:
     - homio_nav_button
-  name: Backyard
+  name: Exterior
   variables:
-    path: /dashboard-homio/backyard
-- type: custom:button-card
-  template:
-    - homio_nav_button
-  name: Driveway
-  variables:
-    path: /dashboard-homio/driveway
-- type: custom:button-card
-  template:
-    - homio_nav_button
-  name: Front Yard
-  variables:
-    path: /dashboard-homio/front-yard
+    path: /dashboard-homio/exterior
 # TODO: boys' rooms (Robbie Dean / Keagan) — add entries here + views in
 # homio.yaml once Trevor sends those screenshots.

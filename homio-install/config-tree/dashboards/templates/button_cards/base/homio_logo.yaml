@@ -3,8 +3,8 @@ homio_logo:
     - homio_default
   tap_action:
     action: navigate
-    navigation_path: /dashboard-homio/home
-  name: Homio.
+    navigation_path: /dashboard-homio/welcome
+  name: The Perch.
   styles:
     name:
       - color: var(--primary-text-color)
