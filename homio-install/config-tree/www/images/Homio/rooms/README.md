@@ -19,10 +19,11 @@ Have already:
   Used by: Kitchen (covers kitchen + dining)
 - makeup.jpg — makeup room / vanity (Trevor, Nov 25, washed to match)
   Used by: Makeup Room
+- living_room.jpg — living room, couches + plaid, hardwood (Trevor, Nov 25, washed to match)
+  Used by: Living Room
 
 Still needed (take or pick a stand-in for each — a room without its photo
 still works, the hero just has no background until it lands):
-- living_room.jpg — Living Room
 - den.jpg — Den
 - hallway.jpg — Hallway (covers the bathroom too, after the merge)
 - master.jpg — Master Bedroom
